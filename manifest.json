@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Cookies & Local Storage Extractor",
+  "description": "Describe what extension does",
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "assets/pending.png"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "permissions": [
+    "cookies",
+    "scripting",
+    "webNavigation"
+  ]
+}
