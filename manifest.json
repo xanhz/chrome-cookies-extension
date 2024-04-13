@@ -7,12 +7,17 @@
     "default_popup": "popup.html",
     "default_icon": "assets/pending.png"
   },
+  "background": {
+    "service_worker": "worker.js",
+    "persistant": true
+  },
   "host_permissions": [
     "<all_urls>"
   ],
   "permissions": [
     "cookies",
     "scripting",
+    "tabs",
     "webNavigation"
   ]
 }
