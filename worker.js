@@ -53,9 +53,14 @@ async function extractLocalStorage(tab) {
 }
 
 /**
- * @param {chrome.tabs.Tab} tab Current active tab
+ * @param {boolean} reload Reload all tabs before sending
  */
-async function send() {
+async function send(reload = false) {
+  if (reload) {
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+    const promises = tabs.map(tab => chrome.tabs.reload(tab.id));
+    await Promise.all(promises);
+  }
   const tabs = await chrome.tabs.query({ currentWindow: true });
   const data = {};
   for (const tab of tabs) {
@@ -86,7 +91,7 @@ chrome.runtime.onMessage.addListener(function (msg, _, sendResponse) {
     clearInterval(settings.timer);
     send()
       .then(() => {
-        settings.timer = setInterval(() => send().catch(noop), settings.cycle);
+        settings.timer = setInterval(() => send(true).catch(noop), settings.cycle);
         sendResponse();
       })
       .catch(error => {
