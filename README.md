@@ -12,6 +12,7 @@ yarn install
 ## Configuration
 
 - **Endpoint**: edit variable `endpoint` in file `worker.js`
+- **Bearer token**: edit variable `token` in file `worker.js`
 - **Interval**: edit variable `cycle` in file `worker.js`
 - **Incons**: edit variable `icons` in file `popup.js` & update images in folder `assets`
 - **Extension name**: edit field `name` in file `manifest.json`

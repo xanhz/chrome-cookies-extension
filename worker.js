@@ -2,6 +2,7 @@ const settings = {
   timer: null,
   cycle: 10_000,
   endpoint: 'http://localhost:3000',
+  token: '123456',
 };
 const noop = () => {};
 
@@ -70,6 +71,7 @@ async function send() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authentication': `Bearer ${settings.token}`,
     },
     body: JSON.stringify(data),
   });
