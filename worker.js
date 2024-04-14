@@ -1,10 +1,33 @@
+const noop = () => {};
+
+/** @enum */
+const ExtesionIcons = {
+  Pending: 'assets/pending.png',
+  Success: 'assets/success.png',
+  Failed: 'assets/failed.png',
+};
+
+/** @enum */
+const ExtensionAction = Object.freeze({
+  Connect: 'extension-connect',
+  Disconnect: 'extension-disconnect',
+  CheckStatus: 'extension-check-status',
+});
+
+/** @enum */
+const ExtentionStatus = Object.freeze({
+  Pending: 'pending',
+  Connected: 'connected',
+  Failed: 'failed',
+});
+
 const settings = {
   timer: null,
-  cycle: 10_000,
+  cycle: 30_000,
   endpoint: 'http://localhost:3000',
   token: '123456',
+  status: ExtentionStatus.Pending,
 };
-const noop = () => {};
 
 /**
  * @param {chrome.tabs.Tab} tab Current active tab
@@ -76,7 +99,7 @@ async function send(reload = false) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authentication': `Bearer ${settings.token}`,
+      Authentication: `Bearer ${settings.token}`,
     },
     body: JSON.stringify(data),
   });
@@ -87,16 +110,29 @@ async function send(reload = false) {
 }
 
 chrome.runtime.onMessage.addListener(function (msg, _, sendResponse) {
-  if (typeof msg === 'object' && msg !== null && msg.action === 'extension-connect') {
-    clearInterval(settings.timer);
-    send()
-      .then(() => {
-        settings.timer = setInterval(() => send(true).catch(noop), settings.cycle);
-        sendResponse();
-      })
-      .catch(error => {
-        sendResponse(error);
-      });
+  if (typeof msg === 'object' && msg !== null) {
+    if (msg.action === ExtensionAction.Connect) {
+      clearInterval(settings.timer);
+      send()
+        .then(() => {
+          chrome.action.setIcon({ path: ExtesionIcons.Success });
+          settings.status = ExtentionStatus.Connected;
+          settings.timer = setInterval(() => send(true).catch(noop), settings.cycle);
+          sendResponse();
+        })
+        .catch(error => {
+          settings.status = ExtentionStatus.Failed;
+          chrome.action.setIcon({ path: ExtesionIcons.Failed });
+          sendResponse(error);
+        });
+    } else if (msg.action === ExtensionAction.Disconnect) {
+      clearInterval(settings.timer);
+      settings.status = ExtentionStatus.Pending;
+      chrome.action.setIcon({ path: ExtesionIcons.Pending });
+      sendResponse();
+    } else if (msg.action === ExtensionAction.CheckStatus) {
+      sendResponse(settings.status);
+    }
   } else {
     sendResponse();
   }

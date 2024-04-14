@@ -12,27 +12,37 @@ body {
   margin: 0;
 }
 
-#btn-connect {
+#container {
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+}
+
+button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007bff;
+  font-weight: 600;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin: 10px;
-  transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
 }
 
-#btn-connect:hover {
-  background-color: #0056b3;
+#btn-connect {
+  background-color: #007bff;
+}
+
+#btn-disconnect {
+  background-color: #700101;
+  cursor: not-allowed;
 }
 
 #spinner {
   display: none;
-  margin-left: 10px;
+  margin-left: 5px;
   width: 10px;
   height: 10px;
   border: 3px solid #ffffff;
